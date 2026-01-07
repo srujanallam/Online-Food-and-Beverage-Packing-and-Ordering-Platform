@@ -4,12 +4,11 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import UserDashboard from "./pages/UserDashboard";
 import Menu from "./pages/Menu";
+import AdminDashboard from "./pages/AdminDashboard";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Payment from "./pages/Payment";
 import MyOrders from "./pages/MyOrders";
-
-import AdminDashboard from "./pages/AdminDashboard";
 import ManageRestaurants from "./pages/ManageRestaurants";
 import ManageFoods from "./pages/ManageFoods";
 import ManagePacking from "./pages/ManagePacking";
@@ -19,54 +18,54 @@ function App() {
   const [page, setPage] = useState("home");
   const role = localStorage.getItem("role");
 
-  // ---------------- HOME ----------------
-  if (page === "home") {
-    return <Home setPage={setPage} />;
-  }
+  // ---------- HOME ----------
+  if (page === "home") return <Home />;
 
-  // ---------------- LOGIN ----------------
+  // ---------- LOGIN ----------
   if (page === "login") {
-    return (
-      <Login
-        onLogin={() => {
-          const r = localStorage.getItem("role");
-          setPage(r === "admin" ? "admin" : "dashboard");
-        }}
-      />
-    );
+    return <Login onLogin={() => setPage("dashboard")} />;
   }
 
-  // ---------------- ADMIN ----------------
+  // ---------- ADMIN ----------
   if (role === "admin") {
-    if (page === "admin") return <AdminDashboard setPage={setPage} />;
-    if (page === "manage-restaurants") return <ManageRestaurants setPage={setPage} />;
-    if (page === "manage-foods") return <ManageFoods setPage={setPage} />;
-    if (page === "manage-packing") return <ManagePacking setPage={setPage} />;
-    if (page === "view-orders") return <ViewOrders setPage={setPage} />;
+    switch (page) {
+      case "dashboard":
+        return <AdminDashboard setPage={setPage} />;
+      case "manage-restaurants":
+        return <ManageRestaurants />;
+      case "manage-foods":
+        return <ManageFoods />;
+      case "manage-packing":
+        return <ManagePacking />;
+      case "view-orders":
+        return <ViewOrders />;
+      default:
+        return <AdminDashboard setPage={setPage} />;
+    }
   }
 
-  // ---------------- USER ----------------
+  // ---------- USER ----------
   switch (page) {
     case "dashboard":
-      return <UserDashboard setPage={setPage} />;
+      return <UserDashboard goToMenu={() => setPage("menu")} />;
 
     case "menu":
-      return <Menu setPage={setPage} />;
+      return <Menu goBack={() => setPage("dashboard")} />;
 
     case "cart":
-      return <Cart setPage={setPage} />;
+      return <Cart />;
 
     case "checkout":
-      return <Checkout setPage={setPage} />;
+      return <Checkout />;
 
     case "payment":
-      return <Payment setPage={setPage} />;
+      return <Payment />;
 
     case "orders":
-      return <MyOrders setPage={setPage} />;
+      return <MyOrders />;
 
     default:
-      return <Home setPage={setPage} />;
+      return <Login onLogin={() => setPage("dashboard")} />;
   }
 }
 
